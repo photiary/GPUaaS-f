@@ -4,7 +4,7 @@ GPUaaS 를 모니터링하는 웹 어플리케이션
 CPU, GPU등 여러 사양의 노드를 선택하고 순차적으로 실행할 수 있도록 Job 정보를 등록한다.
 Node 끼리는 연결할 수 있다.
 
-- 도메인: apps/web/app/job
+- 도메인: job
 - URL: /job/register
 - 화면구성
     - 중앙 컨텐츠 영역에 선택한 Node Card 표시
