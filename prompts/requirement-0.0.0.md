@@ -1,16 +1,24 @@
-# 카드 추가
+GPUaaS 를 모니터링하는 웹 어플리케이션 
 
-- 리소스를 다음 기능을 참고로 예제 카드 추가
-  - apps/web/components/cards
-  - apps/web/components/cards/index.tsx
+# 페이지: Job 등록
+CPU, GPU등 여러 사양의 노드를 선택하고 순차적으로 실행할 수 있도록 Job 정보를 등록한다.
+Node 끼리는 연결할 수 있다.
 
-- 각 기능에 정의한 컴포넌트는 반드시 사용한다.
+- 도메인: apps/web/app/job
+- URL: /job/register
+- 화면구성
+    - 중앙 컨텐츠 영역에 선택한 Node Card 표시
+    - 오른쪽 sidebar: Node Card (등록용)를 세로로 리스트를 표시
+- Node Card 표시방법은 React-flow로 Node끼리 연결 가능
+- 오른쪽 Node Card 리스트에 드래그앤드랍으로 Node들을 선택
+- Job 정보는 debounce로 자동 저장
+- GET /api/nodes를 호출하여 Node Card 표시
 
-## 예제 1
+# 컴포넌트: Node Card (등록용)
+Node 정보를 카드로 표현한다.
 
-- Nextjs, React, shadcn 간단한 내용의 카드
-- `Accordion`, `AlertDialog` 컴포넌트를 사용
-
-## 예제 2
-
-- `Carousel` 컴포넌트 사용
+- 항목
+  - label
+  - Type: GPU, CPU
+  - GPU 수
+  - CPU 수

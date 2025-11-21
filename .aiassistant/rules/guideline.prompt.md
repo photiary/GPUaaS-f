@@ -14,6 +14,7 @@ This document outlines the coding standards, architectural patterns, and best pr
 - **React v19** for building user interfaces
 - **Next v15** is The React Framework for the Web
 - **Tailwindcss v4** for utility-first styling
+- **Zustand** is state management
 - **dayjs** for Date util
 - **shadcn/ui** is a set of beautifully-designed, accessible components and a code distribution platform.
 - **motion** for animation
