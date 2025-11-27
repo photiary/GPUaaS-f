@@ -48,6 +48,7 @@ const debouncedPutContainer = (containerId: string, data: ContainerRequest) => {
 export type NodeData = {
   label: string
   type: string
+  status?: string
   gpuCount?: number
   cpuCount?: number
   originalId: string // 원본 Node ID
@@ -336,6 +337,7 @@ export const useJobStore = create<JobState>((set, get) => ({
         data: {
           label: c.label,
           type: 'container',
+          status: c.status,
           originalId: '', // Monitoring doesn't need originalId from library
           containerId: c.id,
         },

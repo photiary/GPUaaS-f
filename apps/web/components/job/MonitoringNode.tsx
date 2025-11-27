@@ -13,7 +13,7 @@ export function MonitoringNode({ id, data }: NodeProps<AppNode>) {
       />
       <JobMonitoringCard
         label={data.label}
-        type={data.type}
+        status={data.status}
         cpuUsage={data.metrics?.cpuUsage || 0}
         gpuUsage={data.metrics?.gpuUsage || 0}
         memoryUsage={data.metrics?.memoryUsage || 0}

@@ -3,7 +3,7 @@ import { cn } from '@workspace/ui/lib/utils'
 
 export interface JobMonitoringCardProps {
   label: string
-  type: string
+  status?: string
   cpuUsage: number
   gpuUsage: number
   memoryUsage: number
@@ -12,7 +12,7 @@ export interface JobMonitoringCardProps {
 
 export function JobMonitoringCard({
   label,
-  type,
+  status,
   cpuUsage,
   gpuUsage,
   memoryUsage,
@@ -23,7 +23,9 @@ export function JobMonitoringCard({
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex justify-between items-center">
           <span>{label}</span>
-          <span className="text-xs text-muted-foreground uppercase">{type}</span>
+          <div className="flex flex-col items-end">
+            {status && <span className="text-xs text-muted-foreground uppercase">{status}</span>}
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

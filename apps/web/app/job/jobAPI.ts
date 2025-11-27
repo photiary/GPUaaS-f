@@ -293,7 +293,6 @@ export const fetchMonitorContainerMetrics = async (
       }
     },
     onerror(err) {
-      console.error('------------------', err)
       onError(err)
     },
   })
