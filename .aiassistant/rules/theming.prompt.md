@@ -115,9 +115,9 @@ tailwindcss Effects, Filters 등의 기능를 사용하여 선택한 테마에 �
 
 ```css
 @layer utilities {
-    [data-slot="card"] {
-        @apply from-primary/5 to-card bg-gradient-to-t shadow-xl;
-    }
+  [data-slot='card'] {
+    @apply from-primary/5 to-card bg-gradient-to-t shadow-xl;
+  }
 }
 ```
 
@@ -127,8 +127,8 @@ tailwindcss Effects, Filters 등의 기능를 사용하여 선택한 테마에 �
 
 ```css
 @layer utilities {
-    [data-slot="sidebar-inset"] {
-        @apply backdrop-blur-lg border-l-2 shadow-md;
-    }
+  [data-slot='sidebar-inset'] {
+    @apply border-l-2 shadow-md backdrop-blur-lg;
+  }
 }
 ```

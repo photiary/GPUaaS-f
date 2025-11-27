@@ -79,3 +79,7 @@ All tasks are done and **Should be RUN** the prettier script.
 # Prettier script
 pnpm format
 ```
+
+## Page Template
+
+화면 구성은 `apps/web/app/template/info/page.tsx`와 같은 구성으로 생성한다.
