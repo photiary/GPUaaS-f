@@ -44,12 +44,12 @@ const data = {
   navMain: [
     {
       title: 'Job List',
-      url: '#',
+      url: '/job/list',
       icon: IconDashboard,
     },
     {
-      title: 'Lifecycle',
-      url: '#',
+      title: 'Template',
+      url: '/template/info',
       icon: IconListDetails,
     },
     {
