@@ -11,9 +11,10 @@ import {
   OnConnect,
   OnEdgesChange,
   OnNodesChange,
+  reconnectEdge,
 } from '@xyflow/react'
 import { fetchNodes, NodeResponse } from '@/app/node/nodeAPI'
-import { putJob, postJobEdge, deleteJobEdge } from '@/app/job/jobAPI'
+import { putJob, postJobEdge, deleteJobEdge, putJobEdge } from '@/app/job/jobAPI'
 import { postContainer, putContainer, deleteContainer, ContainerRequest } from '@/app/container/containerAPI'
 
 // Debounce를 위한 타임아웃 맵
@@ -64,6 +65,7 @@ interface JobState {
   onNodesChange: OnNodesChange<AppNode>
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
+  onReconnect: (oldEdge: Edge, newConnection: Connection) => void
 
   addNode: (nodeInfo: NodeResponse, position: { x: number; y: number }) => Promise<void>
   updateNodeLabel: (nodeId: string, label: string) => void
@@ -158,6 +160,28 @@ export const useJobStore = create<JobState>((set, get) => ({
           console.error('Failed to create edge:', error)
           set({ edges: get().edges.filter((e) => e.id !== tempId) })
         })
+    }
+  },
+
+  onReconnect: (oldEdge: Edge, newConnection: Connection) => {
+    const { nodes, jobId } = get()
+
+    set({
+      edges: reconnectEdge(oldEdge, newConnection, get().edges),
+    })
+
+    const sourceNode = nodes.find((n) => n.id === newConnection.source)
+    const targetNode = nodes.find((n) => n.id === newConnection.target)
+
+    if (jobId && sourceNode?.data.containerId && targetNode?.data.containerId) {
+      putJobEdge(jobId, oldEdge.id, {
+        sourceContainerId: sourceNode.data.containerId,
+        targetContainerId: targetNode.data.containerId,
+      }).catch((error) => {
+        console.error('Failed to update edge:', error)
+        // Revert the change if update failed
+        // This might be complex, but at least log the error
+      })
     }
   },
 
