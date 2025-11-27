@@ -52,6 +52,11 @@ export type NodeData = {
   cpuCount?: number
   originalId: string // 원본 Node ID
   containerId?: string
+  metrics?: {
+    cpuUsage: number
+    gpuUsage: number
+    memoryUsage: number
+  }
 }
 
 // React Flow Node 타입 확장
@@ -77,6 +82,7 @@ interface JobState {
   addNode: (nodeInfo: NodeResponse, position: { x: number; y: number }) => Promise<void>
   updateNodeLabel: (nodeId: string, label: string) => void
   removeNode: (nodeId: string) => void
+  updateNodeMetrics: (containerId: string, metrics: { cpuUsage: number; gpuUsage: number; memoryUsage: number }) => void
 
   // Job 저장 관련 (debounce 처리는 컴포넌트나 미들웨어에서 할 수도 있지만 여기서는 일단 함수만 정의)
   saveJob: () => Promise<void>
@@ -272,6 +278,23 @@ export const useJobStore = create<JobState>((set, get) => ({
     set({
       nodes: nodes.filter((node) => node.id !== nodeId),
       edges: edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
+    })
+  },
+
+  updateNodeMetrics: (containerId, metrics) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.data.containerId === containerId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              metrics,
+            },
+          }
+        }
+        return node
+      }),
     })
   },
 

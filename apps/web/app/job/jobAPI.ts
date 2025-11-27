@@ -1,5 +1,14 @@
 // Generated API layer for Jobs domain based on web-api-swagger.json
 import { publicApi } from '@workspace/core/api'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+
+export interface ContainerMetrics {
+  containerId: string
+  timestamp: string
+  cpuUsage: number
+  gpuUsage: number
+  memoryUsage: number
+}
 
 export interface JobRequest {
   name: string
@@ -244,11 +253,50 @@ export const fetchMonitorContainerState = async (jobId: string) => {
  * GET /api/jobs/{jobId}/containers/metrics
  *
  * @param jobId Job ID (UUID)
- * @returns 서버 응답 객체 (SSE)
+ * @param onMessage 데이터 수신 콜백
+ * @param onError 에러 콜백
+ * @param signal AbortSignal
  */
-export const fetchMonitorContainerMetrics = async (jobId: string) => {
-  const response = await publicApi.get(`/api/jobs/${jobId}/containers/metrics`)
-  return response.data as any
+export const fetchMonitorContainerMetrics = async (
+  jobId: string,
+  onMessage: (data: ContainerMetrics[]) => void,
+  onError: (err: any) => void,
+  signal?: AbortSignal
+) => {
+  await fetchEventSource(`/api/jobs/${jobId}/containers/metrics`, {
+    method: 'GET',
+    headers: {
+      Accept: 'text/event-stream',
+    },
+    signal: signal,
+    async onopen(response) {
+      // Content-Type 확인
+      const contentType = response.headers.get('content-type');
+      console.log('Content-Type:', contentType);
+      if (response.ok) {
+        return
+      } else {
+        throw new Error(`Failed to connect: ${response.statusText}`)
+      }
+    },
+    onmessage(msg) {
+      if (msg.event === 'keep-alive' || msg.data === 'ok') {
+        return
+      }
+      if (msg.data) {
+        try {
+          const parsedData = JSON.parse(msg.data) as ContainerMetrics[]
+          onMessage(parsedData)
+        } catch (e) {
+          console.error('Failed to parse metrics data:', e)
+        }
+      }
+    },
+    onerror(err) {
+      console.error('------------------', err)
+      onError(err)
+    },
+  })
 }
 
 /**

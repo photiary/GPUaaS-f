@@ -14,11 +14,16 @@ import '@xyflow/react/dist/style.css'
 import { useJobStore } from './store'
 import { CanvasNode } from './CanvasNode'
 
-const nodeTypes = {
+const defaultNodeTypes = {
   customNode: CanvasNode,
 }
 
-function JobCanvasContent() {
+interface JobCanvasProps {
+  readOnly?: boolean
+  nodeTypes?: Record<string, any>
+}
+
+function JobCanvasContent({ readOnly, nodeTypes = defaultNodeTypes }: JobCanvasProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
   const { screenToFlowPosition } = useReactFlow()
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode, onReconnect: onReconnectAction } = useJobStore()
@@ -54,6 +59,8 @@ function JobCanvasContent() {
 
   const onDrop = useCallback(
     async (event: React.DragEvent) => {
+      if (readOnly) return // Prevent drop in read-only mode
+
       event.preventDefault()
 
       const type = event.dataTransfer.getData('application/reactflow')
@@ -73,7 +80,7 @@ function JobCanvasContent() {
 
       await addNode(nodeInfo, position)
     },
-    [addNode, screenToFlowPosition]
+    [addNode, screenToFlowPosition, readOnly]
   )
 
   const onEdgeClick = useCallback((event: React.MouseEvent, edge: Edge) => {
@@ -81,25 +88,29 @@ function JobCanvasContent() {
   }, [])
 
   const onEdgesDelete = useCallback((edges: Edge[]) => {
+    if (readOnly) return
     console.log('Edges deleted:', edges)
-  }, [])
+  }, [readOnly])
 
   return (
     <div className="h-full w-full" ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onReconnect={onReconnect}
-        onReconnectStart={onReconnectStart}
-        onReconnectEnd={onReconnectEnd}
+        onNodesChange={readOnly ? undefined : onNodesChange}
+        onEdgesChange={readOnly ? undefined : onEdgesChange}
+        onConnect={readOnly ? undefined : onConnect}
+        onReconnect={readOnly ? undefined : onReconnect}
+        onReconnectStart={readOnly ? undefined : onReconnectStart}
+        onReconnectEnd={readOnly ? undefined : onReconnectEnd}
         nodeTypes={nodeTypes}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
+        onDragOver={readOnly ? undefined : onDragOver}
+        onDrop={readOnly ? undefined : onDrop}
         onEdgeClick={onEdgeClick}
-        onEdgesDelete={onEdgesDelete}
+        onEdgesDelete={readOnly ? undefined : onEdgesDelete}
+        nodesDraggable={!readOnly}
+        nodesConnectable={!readOnly}
+        elementsSelectable={true} 
         fitView
       >
         <Background />
@@ -110,10 +121,10 @@ function JobCanvasContent() {
   )
 }
 
-export function JobCanvas() {
+export function JobCanvas(props: JobCanvasProps) {
   return (
     <ReactFlowProvider>
-      <JobCanvasContent />
+      <JobCanvasContent {...props} />
     </ReactFlowProvider>
   )
 }

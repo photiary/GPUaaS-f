@@ -7,11 +7,17 @@ import { SiteHeader } from '@/components/template/site-header.tsx'
 import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
 import { JobCanvas } from '@/components/job/JobCanvas'
 import { useJobStore } from '@/components/job/store'
+import { MonitoringNode } from '@/components/job/MonitoringNode'
+import { fetchMonitorContainerMetrics, ContainerMetrics } from '@/app/job/jobAPI'
+
+const nodeTypes = {
+  customNode: MonitoringNode,
+}
 
 export default function JobMonitoringPage() {
   const searchParams = useSearchParams()
   const jobId = searchParams.get('jobId')
-  const { loadJob, reset } = useJobStore()
+  const { loadJob, reset, updateNodeMetrics } = useJobStore()
 
   useEffect(() => {
     if (jobId) {
@@ -19,6 +25,36 @@ export default function JobMonitoringPage() {
       loadJob(jobId)
     }
   }, [jobId, loadJob, reset])
+
+  useEffect(() => {
+    if (!jobId) return
+
+    const controller = new AbortController()
+    const { signal } = controller
+
+    fetchMonitorContainerMetrics(
+      jobId,
+      (metrics) => {
+        if (Array.isArray(metrics)) {
+          metrics.forEach((metric) => {
+            updateNodeMetrics(metric.containerId, metric)
+          })
+        }
+      },
+      (error) => {
+        console.error('SSE error:', error)
+      },
+      signal
+    ).catch((err) => {
+      if (!signal.aborted) {
+        console.error('Monitor connection failed', err)
+      }
+    })
+
+    return () => {
+      controller.abort()
+    }
+  }, [jobId, updateNodeMetrics])
 
   return (
     <SidebarProvider
@@ -34,7 +70,7 @@ export default function JobMonitoringPage() {
         <SiteHeader />
         <div className="flex h-[calc(100vh-var(--header-height))] flex-1 overflow-hidden">
           <div className="bg-background relative h-full flex-1 border-r">
-            <JobCanvas />
+            <JobCanvas readOnly={true} nodeTypes={nodeTypes} />
           </div>
         </div>
       </SidebarInset>
