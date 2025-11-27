@@ -14,7 +14,14 @@ import {
   reconnectEdge,
 } from '@xyflow/react'
 import { fetchNodes, NodeResponse } from '@/app/node/nodeAPI'
-import { putJob, postJobEdge, deleteJobEdge, putJobEdge } from '@/app/job/jobAPI'
+import {
+  putJob,
+  postJobEdge,
+  deleteJobEdge,
+  putJobEdge,
+  fetchJobContainers,
+  fetchJobEdges,
+} from '@/app/job/jobAPI'
 import { postContainer, putContainer, deleteContainer, ContainerRequest } from '@/app/container/containerAPI'
 
 // Debounce를 위한 타임아웃 맵
@@ -74,6 +81,7 @@ interface JobState {
   // Job 저장 관련 (debounce 처리는 컴포넌트나 미들웨어에서 할 수도 있지만 여기서는 일단 함수만 정의)
   saveJob: () => Promise<void>
   reset: () => void
+  loadJob: (jobId: string) => Promise<void>
 }
 
 export const useJobStore = create<JobState>((set, get) => ({
@@ -291,5 +299,35 @@ export const useJobStore = create<JobState>((set, get) => ({
       nodes: [],
       edges: [],
     })
+  },
+
+  loadJob: async (jobId: string) => {
+    set({ jobId })
+    try {
+      const [containers, edges] = await Promise.all([fetchJobContainers(jobId), fetchJobEdges(jobId)])
+
+      const nodes: AppNode[] = containers.map((c) => ({
+        id: c.id,
+        type: 'customNode',
+        position: { x: c.positionX || 0, y: c.positionY || 0 },
+        data: {
+          label: c.label,
+          type: 'container',
+          originalId: '', // Monitoring doesn't need originalId from library
+          containerId: c.id,
+        },
+      }))
+
+      const flowEdges: Edge[] = edges.map((e) => ({
+        id: e.id,
+        source: e.sourceContainerId!,
+        target: e.targetContainerId!,
+        type: 'default', // Assuming default edge type
+      }))
+
+      set({ nodes, edges: flowEdges })
+    } catch (error) {
+      console.error('Failed to load job:', error)
+    }
   },
 }))

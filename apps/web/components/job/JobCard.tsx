@@ -11,6 +11,7 @@ import {
 } from '@workspace/ui/components/dropdown-menu'
 import { Button } from '@workspace/ui/components/button'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface JobCardProps {
   job: JobResponse
@@ -18,6 +19,7 @@ interface JobCardProps {
 }
 
 export function JobCard({ job, onDeleted }: JobCardProps) {
+  const router = useRouter()
   const durationInfo = React.useMemo(() => {
     if (!job.startTime) return 'Pending'
 
@@ -46,14 +48,18 @@ export function JobCard({ job, onDeleted }: JobCardProps) {
     }
   }
 
+  const handleCardClick = () => {
+    router.push(`/job/monitoring?jobId=${job.id}`)
+  }
+
   return (
-    <Card>
+    <Card onClick={handleCardClick} className="cursor-pointer transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{job.name}</CardTitle>
         <div className="flex items-center gap-2">
           <Badge variant={job.status === 'RUNNING' ? 'default' : 'secondary'}>{job.status}</Badge>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />

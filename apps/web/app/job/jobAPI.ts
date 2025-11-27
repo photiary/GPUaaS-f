@@ -24,6 +24,17 @@ export interface JobResponse {
   metadata?: string
 }
 
+export interface ContainerResponse {
+  id: string
+  label: string
+  description?: string
+  sequence?: number
+  status?: string
+  config?: string
+  positionX?: number
+  positionY?: number
+}
+
 export interface SimpleContainerResponse {
   id: string
   label: string
@@ -209,11 +220,11 @@ export const deleteJobEdge = async (jobId: string, edgeId: string) => {
  * GET /api/jobs/{jobId}/containers
  *
  * @param jobId Job ID (UUID)
- * @returns SimpleContainerResponse[]
+ * @returns ContainerResponse[]
  */
 export const fetchJobContainers = async (jobId: string) => {
   const response = await publicApi.get(`/api/jobs/${jobId}/containers`)
-  return response.data as SimpleContainerResponse[]
+  return response.data as ContainerResponse[]
 }
 
 /**
