@@ -27,12 +27,14 @@ export type NodeData = {
 export type AppNode = Node<NodeData>
 
 interface JobState {
+  jobId: string | null
   nodes: AppNode[]
   edges: Edge[]
   nodeLibrary: NodeResponse[]
 
   fetchNodeLibrary: () => Promise<void>
 
+  setJobId: (id: string) => void
   onNodesChange: OnNodesChange<AppNode>
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
@@ -41,9 +43,11 @@ interface JobState {
 
   // Job 저장 관련 (debounce 처리는 컴포넌트나 미들웨어에서 할 수도 있지만 여기서는 일단 함수만 정의)
   saveJob: () => Promise<void>
+  reset: () => void
 }
 
 export const useJobStore = create<JobState>((set, get) => ({
+  jobId: null,
   nodes: [],
   edges: [],
   nodeLibrary: [],
@@ -56,6 +60,8 @@ export const useJobStore = create<JobState>((set, get) => ({
       console.error('Failed to fetch node library:', error)
     }
   },
+
+  setJobId: (id: string) => set({ jobId: id }),
 
   onNodesChange: (changes: NodeChange<AppNode>[]) => {
     set({
@@ -100,5 +106,13 @@ export const useJobStore = create<JobState>((set, get) => ({
     console.log('Saving job...', { nodes, edges })
     // 실제 API 호출 로직은 여기에 구현
     // 예: await postJob({ ... })
+  },
+
+  reset: () => {
+    set({
+      jobId: null,
+      nodes: [],
+      edges: [],
+    })
   },
 }))

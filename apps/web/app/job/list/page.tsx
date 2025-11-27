@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { AppSidebar } from '@/components/template/app-sidebar'
 import { SiteHeader } from '@/components/template/site-header'
 import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
@@ -13,9 +13,13 @@ import { PlusIcon } from 'lucide-react'
 export default function Page() {
   const [jobs, setJobs] = useState<JobResponse[]>([])
 
-  useEffect(() => {
+  const refreshJobs = useCallback(() => {
     fetchJobs().then(setJobs).catch(console.error)
   }, [])
+
+  useEffect(() => {
+    refreshJobs()
+  }, [refreshJobs])
 
   return (
     <SidebarProvider
@@ -43,7 +47,7 @@ export default function Page() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 {jobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard key={job.id} job={job} onDeleted={refreshJobs} />
                 ))}
               </div>
             </div>

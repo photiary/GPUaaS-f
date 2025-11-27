@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { AppSidebar } from '@/components/template/app-sidebar.tsx'
 import { SiteHeader } from '@/components/template/site-header.tsx'
 import { SidebarInset, SidebarProvider } from '@workspace/ui/components/sidebar'
 import { JobSidebar } from '@/components/job/JobSidebar'
 import { JobCanvas } from '@/components/job/JobCanvas'
 import { useJobStore } from '@/components/job/store'
+import { postJob } from '../jobAPI'
 
 // Debounce hook implementation
 function useDebounce(effect: () => void, dependencies: any[], delay: number) {
@@ -17,7 +18,22 @@ function useDebounce(effect: () => void, dependencies: any[], delay: number) {
 }
 
 export default function JobRegisterPage() {
-  const { nodes, edges, saveJob } = useJobStore()
+  const { nodes, edges, saveJob, reset, setJobId } = useJobStore()
+  const initialized = useRef(false)
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true
+      reset()
+      postJob({ name: 'New Job' })
+        .then((job) => {
+          setJobId(job.id)
+        })
+        .catch((err) => {
+          console.error('Failed to create initial job', err)
+        })
+    }
+  }, [reset, setJobId])
 
   // Auto-save when nodes or edges change (debounce 1000ms)
   useDebounce(

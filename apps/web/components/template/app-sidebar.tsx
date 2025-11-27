@@ -158,8 +158,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   useEffect(() => {
     const handleGetCount = async () => {
       try {
-        const data = await fetchCount(1)
-        setCounter(data.amount)
+        setCounter(1)
       } catch (error) {
         console.error(error)
       }
