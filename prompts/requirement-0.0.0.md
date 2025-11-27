@@ -28,3 +28,15 @@ Shadcn Card 컴포넌트를 사용하고 React-flow에서 사용할 수 있도�
   - Type: GPU, CPU
   - GPU 수
   - CPU 수
+
+# 페이지: Job 카드 목록
+
+- 화면타이틀: Job List
+- Job카드를 4개씩 세로 표시한다.
+
+# 컴포넌트: Job Card (Job 카드 목록용)
+
+- 항목
+  - Label
+  - Status tag
+    - Start time ~ End time 소요시간

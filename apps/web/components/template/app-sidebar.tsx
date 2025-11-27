@@ -19,7 +19,6 @@ import {
   IconUsers,
 } from '@tabler/icons-react'
 
-import { NavDocuments } from '@/components/template/nav-documents.tsx'
 import { NavMain } from '@/components/template/nav-main.tsx'
 import { NavSecondary } from '@/components/template/nav-secondary.tsx'
 import { NavUser } from '@/components/template/nav-user.tsx'
@@ -44,7 +43,7 @@ const data = {
   },
   navMain: [
     {
-      title: 'Dashboard',
+      title: 'Job List',
       url: '#',
       icon: IconDashboard,
     },
@@ -185,7 +184,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
