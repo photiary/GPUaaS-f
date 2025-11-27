@@ -2,9 +2,12 @@ import { useEffect } from 'react'
 import { useJobStore } from './store'
 import { NodeCard } from './NodeCard'
 import { NodeResponse } from '@/app/node/nodeAPI'
+import { Input } from '@workspace/ui/components/input'
+import { Textarea } from '@workspace/ui/components/textarea'
+import { Label } from '@workspace/ui/components/label'
 
 export function JobSidebar() {
-  const { nodeLibrary, fetchNodeLibrary } = useJobStore()
+  const { nodeLibrary, fetchNodeLibrary, jobName, jobDescription, setJobInfo } = useJobStore()
 
   useEffect(() => {
     fetchNodeLibrary()
@@ -17,6 +20,32 @@ export function JobSidebar() {
 
   return (
     <aside className="bg-muted/10 flex h-full w-[300px] flex-col border-l">
+      <div className="bg-background border-b p-4 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Job Details</h2>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="job-name">Job Name</Label>
+              <Input
+                id="job-name"
+                value={jobName}
+                onChange={(e) => setJobInfo(e.target.value, jobDescription)}
+                placeholder="Enter job name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="job-desc">Description</Label>
+              <Textarea
+                id="job-desc"
+                value={jobDescription}
+                onChange={(e) => setJobInfo(jobName, e.target.value)}
+                placeholder="Enter job description"
+                className="min-h-[80px]"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="bg-background border-b p-4">
         <h2 className="text-lg font-semibold">Node Library</h2>
         <p className="text-muted-foreground text-xs">Drag nodes to the canvas</p>

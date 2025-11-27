@@ -1,8 +1,10 @@
 import { Handle, Position, NodeProps } from '@xyflow/react'
 import { NodeCard } from './NodeCard'
-import { AppNode } from './store'
+import { AppNode, useJobStore } from './store'
 
-export function CanvasNode({ data }: NodeProps<AppNode>) {
+export function CanvasNode({ id, data }: NodeProps<AppNode>) {
+  const { updateNodeLabel, removeNode } = useJobStore()
+
   return (
     <div className="relative w-[200px]">
       <Handle type="target" position={Position.Top} className="bg-primary border-background h-3 w-3 border-2" />
@@ -12,6 +14,8 @@ export function CanvasNode({ data }: NodeProps<AppNode>) {
         gpuCount={data.gpuCount}
         cpuCount={data.cpuCount}
         className="border-primary/50 shadow-sm"
+        onLabelChange={(newLabel) => updateNodeLabel(id, newLabel)}
+        onDelete={() => removeNode(id)}
       />
       <Handle type="source" position={Position.Bottom} className="bg-primary border-background h-3 w-3 border-2" />
     </div>

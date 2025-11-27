@@ -20,7 +20,7 @@ function JobCanvasContent() {
   }, [])
 
   const onDrop = useCallback(
-    (event: React.DragEvent) => {
+    async (event: React.DragEvent) => {
       event.preventDefault()
 
       const type = event.dataTransfer.getData('application/reactflow')
@@ -38,7 +38,7 @@ function JobCanvasContent() {
         y: event.clientY,
       })
 
-      addNode(nodeInfo, position)
+      await addNode(nodeInfo, position)
     },
     [addNode, screenToFlowPosition]
   )

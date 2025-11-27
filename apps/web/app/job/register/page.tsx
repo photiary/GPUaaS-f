@@ -18,7 +18,7 @@ function useDebounce(effect: () => void, dependencies: any[], delay: number) {
 }
 
 export default function JobRegisterPage() {
-  const { nodes, edges, saveJob, reset, setJobId } = useJobStore()
+  const { nodes, edges, saveJob, reset, setJobId, setJobInfo, jobName, jobDescription } = useJobStore()
   const initialized = useRef(false)
 
   useEffect(() => {
@@ -28,21 +28,20 @@ export default function JobRegisterPage() {
       postJob({ name: 'New Job' })
         .then((job) => {
           setJobId(job.id)
+          setJobInfo(job.name, job.description || '')
         })
         .catch((err) => {
           console.error('Failed to create initial job', err)
         })
     }
-  }, [reset, setJobId])
+  }, [reset, setJobId, setJobInfo])
 
-  // Auto-save when nodes or edges change (debounce 1000ms)
+  // Auto-save when nodes, edges, or job info changes (debounce 1000ms)
   useDebounce(
     () => {
-      if (nodes.length > 0) {
-        saveJob()
-      }
+      saveJob()
     },
-    [nodes, edges],
+    [nodes, edges, jobName, jobDescription],
     1000
   )
 
