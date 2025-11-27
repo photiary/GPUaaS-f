@@ -134,4 +134,28 @@
     [data-slot="card"] {
         @apply from-primary/5 to-card bg-gradient-to-t shadow-xl;
     }
+
+    /* Border motion animation for running containers */
+    .card-wrapper-running {
+        @apply relative overflow-hidden rounded-xl p-[2px];
+    }
+
+    .card-wrapper-running::before {
+        background: conic-gradient(
+            rgba(58, 134, 255, 0.5) 0deg,
+            rgba(29, 78, 216, 0.5) 60deg,
+            transparent 120deg
+        );
+        @apply absolute inset-[-50%] animate-[border-spin_3s_linear_infinite] content-[''];
+    }
+
+    .card-content-running {
+        @apply relative rounded-xl bg-card z-10;
+    }
+}
+
+@keyframes border-spin {
+    100% {
+        transform: rotate(-360deg);
+    }
 }
