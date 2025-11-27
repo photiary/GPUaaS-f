@@ -22,6 +22,7 @@ Job을 구성하는 Container를 React flow(@xyflow/react)로 표현한다.
 
 Node 정보를 카드로 표현한다.
 Shadcn Card 컴포넌트를 사용하고 React-flow에서 사용할 수 있도록 한다.
+'New' Job 생성 버튼을 추가하고 클릭하면 Job 생성 화면으로 이동하도록 기능 추가
 
 - 항목
   - label
