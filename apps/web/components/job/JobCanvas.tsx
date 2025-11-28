@@ -3,7 +3,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useReactFlow,
   ReactFlowProvider,
   Edge,
@@ -115,7 +114,6 @@ function JobCanvasContent({ readOnly, nodeTypes = defaultNodeTypes }: JobCanvasP
       >
         <Background />
         <Controls />
-        <MiniMap />
       </ReactFlow>
     </div>
   )
