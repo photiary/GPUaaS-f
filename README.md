@@ -1,31 +1,28 @@
-# shadcn/ui monorepo template
+# React Flow를 활용한 실시간 서버 모니터링
 
-This template is for creating a monorepo with shadcn/ui.
+- Monorepo 구조
+- React flow를 사용하여 서버관리 및 모니터링을 효과적으로 지원한다. 
 
-## Usage
+![register.png](docs/images/register.png)
+![monitoring.gif](docs/images/monitoring.gif)
 
-```bash
-pnpm dlx shadcn@latest init
+## 🍕 주요 라이브러리
+
+- React
+- Next.js
+- shadcn/ui
+- Tailwindcss
+- Zustand
+- React flow
+
+## 🍔 주요 리소스 구조
+
 ```
-
-## Adding components
-
-To add components to your app, run the following command at the root of your `web` app:
-
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
-```
-
-This will place the ui components in the `packages/ui/src/components` directory.
-
-## Tailwind
-
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
-
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from '@workspace/ui/components/button'
+root
+├─ .aiassistant              # AI-Agent 가이드라인 프롬프트
+├─ prompts                   # 기능 프롬프트
+├─ apps.web
+│  ├─ app.job                # Job 관리  
+│  └─ prompts                # API Swagger json 프롬프트
+└─ packages                  # Core 패키지, shadcn/ui 패키지 
 ```
